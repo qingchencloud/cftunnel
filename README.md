@@ -325,9 +325,14 @@ git tag v0.x.0 && git push --tags  # 推送 tag 自动触发 GitHub Actions 发�
 
 ## 交流
 
+- 官网: [cftunnel.qt.cool](https://cftunnel.qt.cool)
 - QQ 群: [OpenClaw 交流群](https://qm.qq.com/q/qUfdR0jJVS)
 - Issues: [GitHub Issues](https://github.com/qingchencloud/cftunnel/issues)
 
 ## License
 
 MIT
+
+---
+
+由 [武汉晴辰天下网络科技有限公司](https://qingchencloud.com) 开源维护
