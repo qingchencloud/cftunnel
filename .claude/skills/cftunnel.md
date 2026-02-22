@@ -8,7 +8,20 @@
 curl -fsSL https://raw.githubusercontent.com/qingchencloud/cftunnel/main/install.sh | bash
 ```
 
-## 首次使用前需要两个参数
+## 免域名模式（零配置）
+
+无需账户、Token、域名，一条命令生成临时公网地址：
+
+```bash
+cftunnel quick <端口>
+# ✔ 隧道已启动: https://xxx-yyy-zzz.trycloudflare.com
+```
+
+Ctrl+C 退出后域名自动失效。适合临时分享和调试。
+
+## 自有域名模式
+
+### 首次使用前需要两个参数
 
 ### 1. API Token（API 令牌）
 
@@ -40,6 +53,7 @@ cftunnel up                                            # 启动隧道
 
 | 命令 | 说明 |
 |------|------|
+| `quick <端口>` | 免域名模式，生成 `*.trycloudflare.com` 临时域名 |
 | `init [--token --account]` | 配置认证 |
 | `create <名称>` | 创建隧道 |
 | `add <名称> <端口> --domain <域名>` | 添加路由（自动创建 CNAME） |

@@ -8,16 +8,28 @@
 
 [为什么选 cftunnel？](#why) · [安装](#install) · [快速上手](#quickstart) · [命令参考](#commands) · [AI 助手集成](#ai) · [交流](#contact)
 
+关联项目：[ClawApp](https://github.com/qingchencloud/clawapp) · [OpenClaw 中文翻译](https://github.com/1186258278/OpenClawChineseTranslation)
+
 > 用 AI 写了个前端页面想给客户看？本地跑着 API 想让远程同事调试？开发环境需要接收 Webhook？
 >
 > 一条命令，你的 `localhost` 就有了公网域名。
 
-cftunnel 把 Cloudflare Tunnel 的繁琐流程（装 cloudflared → 登录 → 创建隧道 → 写 config → 配 DNS → 注册服务）封装成 4 条命令，**5 分钟搞定内网穿透，免费、安全、无需公网 IP**。
+**免域名模式**（零配置，临时分享）：
+
+```bash
+cftunnel quick 3000
+# ✔ 隧道已启动: https://xxx-yyy-zzz.trycloudflare.com
+```
+
+**自有域名模式**（稳定持久）：4 条命令搞定 `init` → `create` → `add` → `up`
+
+cftunnel 把 Cloudflare Tunnel 的繁琐流程封装成极简 CLI，**免费、安全、无需公网 IP**。
 
 <h2 id="why">为什么选 cftunnel？</h2>
 
 | 对比项 | 原生 cloudflared | cftunnel |
 |--------|-----------------|----------|
+| 免域名穿透 | `cloudflared tunnel --url` 手动操作 | `cftunnel quick <端口>` 一条命令 |
 | 创建隧道 | 登录浏览器 + 手动配置 | `cftunnel create my-tunnel` |
 | DNS 记录 | 手动去 Dashboard 创建 CNAME | `cftunnel add` 自动创建 |
 | 多路由管理 | 手动编辑 YAML 配置 | `cftunnel add/remove/list` |
@@ -29,7 +41,8 @@ cftunnel 把 Cloudflare Tunnel 的繁琐流程（装 cloudflared → 登录 → 
 
 <h2 id="features">特性</h2>
 
-- **极简操作** — `init` → `create` → `add` → `up`，4 步搞定
+- **免域名模式** — `cftunnel quick <端口>`，零配置生成 `*.trycloudflare.com` 临时公网地址
+- **极简操作** — `init` → `create` → `add` → `up`，4 步搞定自有域名穿透
 - **自动 DNS** — 添加路由时自动创建 CNAME 记录，删除时自动清理
 - **进程托管** — 自动下载 cloudflared，支持 macOS launchd / Linux systemd 开机自启
 - **自动更新** — 内置版本检查和一键自更新
@@ -76,7 +89,20 @@ make build
 
 <h2 id="quickstart">快速上手</h2>
 
-### 1. 准备 Cloudflare API Token
+### 方式一：免域名模式（零配置）
+
+无需账户、Token、域名，装好就能用：
+
+```bash
+cftunnel quick 3000
+# ✔ 隧道已启动: https://xxx-yyy-zzz.trycloudflare.com
+```
+
+> 适合临时分享和调试，Ctrl+C 退出后域名自动失效。需要固定域名请用方式二。
+
+### 方式二：自有域名模式
+
+#### 1. 准备 Cloudflare API Token
 
 > 前提：你需要一个 Cloudflare 账户和至少一个已添加的域名。
 
@@ -105,7 +131,7 @@ make build
 - **方式 A**: [Cloudflare 首页](https://dash.cloudflare.com) → 点击域名 → 页面右下角「API」区域 → 复制「账户 ID」
 - **方式 B**: 首页 → 账户名称旁「⋯」→ 复制账户 ID
 
-### 2. 初始化认证
+#### 2. 初始化认证
 
 ```bash
 # 交互式（推荐）
@@ -115,20 +141,20 @@ cftunnel init
 cftunnel init --token <your-token> --account <account-id>
 ```
 
-### 3. 创建隧道
+#### 3. 创建隧道
 
 ```bash
 cftunnel create my-tunnel
 ```
 
-### 4. 添加路由
+#### 4. 添加路由
 
 ```bash
 # 将 app.example.com 指向本地 3000 端口
 cftunnel add myapp 3000 --domain app.example.com
 ```
 
-### 5. 启动隧道
+#### 5. 启动隧道
 
 ```bash
 cftunnel up
@@ -139,6 +165,12 @@ cftunnel up
 <p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
 
 <h2 id="commands">命令参考</h2>
+
+### 免域名模式
+
+| 命令 | 说明 |
+|------|------|
+| `cftunnel quick <端口>` | 零配置启动，生成 `*.trycloudflare.com` 临时域名 |
 
 ### 配置管理
 
