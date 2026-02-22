@@ -277,6 +277,12 @@ cftunnel 内置了 AI 助手 Skills，让 Claude Code、OpenClaw 等 AI 编码�
 将项目克隆到本地后，Claude Code 会自动加载 `.claude/skills/cftunnel.md`，你可以直接说：
 
 ```
+帮我用 cftunnel quick 把本地 3000 端口临时分享出去
+```
+
+或者：
+
+```
 帮我用 cftunnel 把本地 3000 端口暴露到 dev.example.com
 ```
 
@@ -294,7 +300,17 @@ cftunnel 内置了 AI 助手 Skills，让 Claude Code、OpenClaw 等 AI 编码�
 
 curl -fsSL https://raw.githubusercontent.com/qingchencloud/cftunnel/main/install.sh | bash
 
-## 首次使用前，需要引导用户准备两个参数
+## 两种模式
+
+### 模式一：免域名（零配置，临时用）
+
+cftunnel quick <端口>
+# 自动生成 *.trycloudflare.com 随机域名，Ctrl+C 退出即失效
+# 无需账户、Token、域名
+
+### 模式二：自有域名（稳定持久）
+
+需要引导用户准备两个参数：
 
 1. API Token（API 令牌）:
    - 打开 https://dash.cloudflare.com/profile/api-tokens
@@ -311,7 +327,7 @@ curl -fsSL https://raw.githubusercontent.com/qingchencloud/cftunnel/main/install
    - 方式 A: https://dash.cloudflare.com → 点击域名 → 右下角「API」区域 → 账户 ID
    - 方式 B: 首页 → 账户名称旁「⋯」→ 复制账户 ID
 
-## 使用流程
+使用流程：
 
 # 第 1 步: 配置认证（需要上面两个参数）
 cftunnel init --token <API_TOKEN> --account <ACCOUNT_ID>
@@ -327,6 +343,7 @@ cftunnel up
 
 ## 其他命令
 
+- cftunnel quick <端口>   # 免域名模式（零配置）
 - cftunnel down          # 停止隧道
 - cftunnel status        # 查看状态
 - cftunnel list          # 列出所有路由
@@ -338,7 +355,8 @@ cftunnel up
 
 ## 注意事项
 
-- 执行任何操作前，先确认用户已完成 init 和 create
+- 临时分享优先推荐 `cftunnel quick`，零配置最快
+- 自有域名模式需先完成 `init` 和 `create`
 - 添加路由时会自动创建 DNS CNAME 记录，删除时自动清理
 - 一个隧道可以挂载多条路由（多个域名指向不同本地端口）
 - 域名必须是用户 Cloudflare 账户中已有的域名的子域名
