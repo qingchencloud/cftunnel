@@ -1,6 +1,8 @@
 package selfupdate
 
 import (
+	"archive/tar"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -34,7 +36,7 @@ func LatestVersion() (string, error) {
 
 // Update 下载最新版本替换自身
 func Update(version string) error {
-	url := fmt.Sprintf("https://github.com/%s/releases/download/%s/cftunnel_%s_%s",
+	url := fmt.Sprintf("https://github.com/%s/releases/download/%s/cftunnel_%s_%s.tar.gz",
 		repo, version, runtime.GOOS, runtime.GOARCH)
 
 	resp, err := http.Get(url)
@@ -46,6 +48,27 @@ func Update(version string) error {
 		return fmt.Errorf("下载失败: HTTP %d", resp.StatusCode)
 	}
 
+	// 解压 tar.gz 提取 cftunnel 二进制
+	gr, err := gzip.NewReader(resp.Body)
+	if err != nil {
+		return fmt.Errorf("解压失败: %w", err)
+	}
+	defer gr.Close()
+
+	tr := tar.NewReader(gr)
+	for {
+		hdr, err := tr.Next()
+		if err == io.EOF {
+			return fmt.Errorf("tar.gz 中未找到 cftunnel 二进制")
+		}
+		if err != nil {
+			return fmt.Errorf("解压失败: %w", err)
+		}
+		if hdr.Name == "cftunnel" {
+			break
+		}
+	}
+
 	exe, err := os.Executable()
 	if err != nil {
 		return err
@@ -55,7 +78,7 @@ func Update(version string) error {
 	if err != nil {
 		return err
 	}
-	if _, err := io.Copy(f, resp.Body); err != nil {
+	if _, err := io.Copy(f, tr); err != nil {
 		f.Close()
 		os.Remove(tmp)
 		return err
