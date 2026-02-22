@@ -40,13 +40,8 @@ var addCmd = &cobra.Command{
 		client := cfapi.New(cfg.Auth.APIToken, cfg.Auth.AccountID)
 		ctx := context.Background()
 
-		// 提取主域名查找 Zone
-		parts := strings.Split(addDomain, ".")
-		if len(parts) < 2 {
-			return fmt.Errorf("无效域名: %s", addDomain)
-		}
-		mainDomain := strings.Join(parts[len(parts)-2:], ".")
-		zone, err := client.FindZoneByDomain(ctx, mainDomain)
+		// 通过遍历账户 Zone 匹配域名，支持多级 TLD
+		zone, err := findZoneForDomain(ctx, client, addDomain)
 		if err != nil {
 			return err
 		}
