@@ -11,7 +11,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var initToken, initAccountID, initTunnelName string
+
 func init() {
+	initCmd.Flags().StringVar(&initToken, "token", "", "API 令牌")
+	initCmd.Flags().StringVar(&initAccountID, "account", "", "账户 ID")
+	initCmd.Flags().StringVar(&initTunnelName, "name", "my-tunnel", "隧道名称")
 	rootCmd.AddCommand(initCmd)
 }
 
@@ -30,7 +35,7 @@ var initCmd = &cobra.Command{
 		fmt.Println("     添加 3 条权限（点「+ 添加更多」逐条添加）：")
 		fmt.Println("     ┌──────────────────────────────────────────────────┐")
 		fmt.Println("     │ 第 1 行: 帐户 │ Cloudflare Tunnel │ 编辑       │")
-		fmt.Println("     │ 第 2 行: 区域 │ DNS 设置          │ 编辑       │")
+		fmt.Println("     │ 第 2 行: 区域 │ DNS              │ 编辑       │")
 		fmt.Println("     │ 第 3 行: 区域 │ 区域设置          │ 读取       │")
 		fmt.Println("     └──────────────────────────────────────────────────┘")
 		fmt.Println("     提示: 第 2、3 行需先将左侧「帐户」切换为「区域」")
@@ -42,22 +47,26 @@ var initCmd = &cobra.Command{
 		fmt.Println("     方式 B: 首页 → 账户名称旁「⋯」→ 复制账户 ID")
 		fmt.Println()
 
-		var apiToken, accountID, tunnelName string
+		apiToken := strings.TrimSpace(initToken)
+		accountID := strings.TrimSpace(initAccountID)
+		tunnelName := strings.TrimSpace(initTunnelName)
 
-		err := huh.NewForm(
-			huh.NewGroup(
-				huh.NewInput().Title("API 令牌 (API Token)").Value(&apiToken).Placeholder("在 Cloudflare 控制台创建"),
-				huh.NewInput().Title("账户 ID (Account ID)").Value(&accountID).Placeholder("32 位十六进制字符串"),
-				huh.NewInput().Title("隧道名称").Value(&tunnelName).Placeholder("my-tunnel"),
-			),
-		).Run()
-		if err != nil {
-			return err
+		// 有 flag 则跳过 TUI
+		if apiToken == "" || accountID == "" {
+			err := huh.NewForm(
+				huh.NewGroup(
+					huh.NewInput().Title("API 令牌 (API Token)").Value(&apiToken).Placeholder("在 Cloudflare 控制台创建"),
+					huh.NewInput().Title("账户 ID (Account ID)").Value(&accountID).Placeholder("32 位十六进制字符串"),
+					huh.NewInput().Title("隧道名称").Value(&tunnelName).Placeholder("my-tunnel"),
+				),
+			).Run()
+			if err != nil {
+				return err
+			}
+			apiToken = strings.TrimSpace(apiToken)
+			accountID = strings.TrimSpace(accountID)
+			tunnelName = strings.TrimSpace(tunnelName)
 		}
-
-		apiToken = strings.TrimSpace(apiToken)
-		accountID = strings.TrimSpace(accountID)
-		tunnelName = strings.TrimSpace(tunnelName)
 		if tunnelName == "" {
 			tunnelName = "my-tunnel"
 		}

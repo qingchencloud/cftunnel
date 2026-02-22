@@ -59,11 +59,8 @@ func Running() bool {
 	if err != nil {
 		return false
 	}
-	proc, err := os.FindProcess(pid)
-	if err != nil {
-		return false
-	}
-	return proc.Signal(nil) == nil
+	// 用 kill -0 检测进程是否存在
+	return exec.Command("kill", "-0", strconv.Itoa(pid)).Run() == nil
 }
 
 // PID 返回当前运行的 PID
