@@ -6,6 +6,8 @@
 
 **Cloudflare Tunnel 一键管理 CLI** — 让本地项目秒变公网可访问。
 
+[为什么选 cftunnel？](#为什么选-cftunnel) · [安装](#安装) · [快速上手](#快速上手) · [命令参考](#命令参考) · [AI 助手集成](#ai-助手集成) · [交流](#交流)
+
 > 用 AI 写了个前端页面想给客户看？本地跑着 API 想让远程同事调试？开发环境需要接收 Webhook？
 >
 > 一条命令，你的 `localhost` 就有了公网域名。
@@ -23,6 +25,8 @@ cftunnel 把 Cloudflare Tunnel 的繁琐流程（装 cloudflared → 登录 → 
 | 清理资源 | 手动删隧道 + 删 DNS + 删配置 | `cftunnel destroy` 一键清理 |
 | AI 集成 | 无 | 内置 Skills，AI 助手直接管理 |
 
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
+
 ## 特性
 
 - **极简操作** — `init` → `create` → `add` → `up`，4 步搞定
@@ -31,6 +35,8 @@ cftunnel 把 Cloudflare Tunnel 的繁琐流程（装 cloudflared → 登录 → 
 - **自动更新** — 内置版本检查和一键自更新
 - **AI 友好** — 内置 Claude Code / OpenClaw Skills，AI 助手可直接管理隧道
 - **跨平台** — 支持 macOS (Intel/Apple Silicon) + Linux (amd64/arm64)
+
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
 
 ## 安装
 
@@ -65,6 +71,8 @@ git clone https://github.com/qingchencloud/cftunnel.git
 cd cftunnel
 make build
 ```
+
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
 
 ## 快速上手
 
@@ -128,6 +136,8 @@ cftunnel up
 
 搞定！现在可以通过 `app.example.com` 访问你本地的 3000 端口服务了。
 
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
+
 ## 命令参考
 
 ### 配置管理
@@ -170,6 +180,8 @@ cftunnel up
 | `cftunnel version [--check]` | 显示版本 / 检查更新 |
 | `cftunnel update` | 自动更新到最新版 |
 
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
+
 ## 典型使用场景
 
 ### 场景 1: 暴露本地开发服务
@@ -199,6 +211,8 @@ cftunnel add admin 8888 --domain admin.example.com
 cftunnel list
 ```
 
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
+
 ## 配置文件
 
 配置存储在 `~/.cftunnel/config.yml`：
@@ -219,6 +233,8 @@ routes:
     zone_id: "auto-detected"
     dns_record_id: "auto-created"
 ```
+
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
 
 ## AI 助手集成
 
@@ -297,6 +313,8 @@ cftunnel up
 ```
 
 </details>
+
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
 
 ## 开发
 
