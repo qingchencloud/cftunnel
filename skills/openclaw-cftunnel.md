@@ -1,31 +1,56 @@
 # cftunnel — Cloudflare Tunnel CLI
 
-一键管理 Cloudflare Tunnel 的开源工具。
+一键管理 Cloudflare Tunnel 的开源工具，内网穿透从未如此简单。
 
-## 快速上手
+## 首次使用前需要两个参数
+
+### 1. API Token（API 令牌）
+
+引导用户打开 https://dash.cloudflare.com/profile/api-tokens 创建自定义令牌，添加 3 条权限：
+
+```
+帐户 │ Cloudflare Tunnel │ 编辑
+区域 │ DNS              │ 编辑    ← 注意选「DNS」不是「DNS 设置」
+区域 │ 区域设置          │ 读取
+```
+
+第 2、3 行需将左侧下拉框从「帐户」切换为「区域」。区域资源选择用户的域名。
+
+### 2. Account ID（账户 ID）
+
+- 方式 A: https://dash.cloudflare.com → 点击域名 → 右下角「API」区域
+- 方式 B: 首页 → 账户名称旁「⋯」→ 复制账户 ID
+
+## 使用流程
 
 ```bash
-cftunnel init                                          # 配置认证
+cftunnel init                                          # 配置认证（需要 Token + Account ID）
 cftunnel create my-tunnel                              # 创建隧道
-cftunnel add myapp 3000 --domain myapp.example.com     # 添加路由
-cftunnel up                                            # 启动
+cftunnel add myapp 3000 --domain myapp.example.com     # 添加路由（自动创建 CNAME）
+cftunnel up                                            # 启动隧道
 ```
 
 ## 全部命令
 
 - `init [--token --account]` — 配置 API 认证
 - `create <名称>` — 创建隧道
-- `add <名称> <端口> --domain <域名>` — 添加路由
-- `remove <名称>` — 删除路由
+- `add <名称> <端口> --domain <域名>` — 添加路由（自动创建 CNAME）
+- `remove <名称>` — 删除路由（自动清理 DNS）
 - `list` — 列出路由
 - `up` / `down` — 启停隧道
 - `status` — 查看状态
-- `destroy [--force]` — 删除隧道
+- `destroy [--force]` — 删除隧道 + 所有 DNS 记录
 - `reset [--force]` — 完全重置
-- `install` / `uninstall` — 系统服务
+- `install` / `uninstall` — 系统服务（开机自启）
 - `logs [-f]` — 查看日志
-- `version [--check]` — 版本信息
+- `version [--check]` — 版本信息 / 检查更新
 - `update` — 自动更新
+
+## 注意事项
+
+- 执行操作前确认用户已完成 `init` 和 `create`
+- 域名必须是用户 CF 账户中已有域名的子域名
+- 一个隧道可挂载多条路由（多域名 → 不同本地端口）
 
 ## 仓库
 
