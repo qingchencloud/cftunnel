@@ -1,0 +1,23 @@
+# 编译产物
+cftunnel
+*.exe
+dist/
+
+# 依赖
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# 系统
+.DS_Store
+
+# 敏感文件 — 绝对不能入库
+*.pem
+*.key
+*.env
+.env*
+config.yml
+credentials*.json
