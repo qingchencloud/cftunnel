@@ -37,8 +37,9 @@ var initCmd = &cobra.Command{
 		fmt.Println()
 		fmt.Println("     区域资源 → 包括 → 特定区域 → 选择你的域名")
 		fmt.Println()
-		fmt.Println("  2. 账户 ID 获取方式:")
-		fmt.Println("     Cloudflare 首页 → 点击你的域名 → 右侧栏「账户 ID」")
+		fmt.Println("  2. 账户 ID 获取方式（任选其一）:")
+		fmt.Println("     方式 A: 首页 → 点击域名 → 页面右下角「API」区域 →「账户 ID」")
+		fmt.Println("     方式 B: 首页 → 账户名称旁「⋯」→ 复制账户 ID")
 		fmt.Println()
 
 		var apiToken, accountID, tunnelName string
