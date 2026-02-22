@@ -6,9 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Version = "dev"
+
 var rootCmd = &cobra.Command{
-	Use:   "cftunnel",
-	Short: "Cloudflare Tunnel 一键管理工具",
+	Use:     "cftunnel",
+	Short:   "Cloudflare Tunnel 一键管理工具",
+	Version: Version,
 }
 
 func Execute() {

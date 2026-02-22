@@ -13,7 +13,7 @@ import (
 var addDomain string
 
 func init() {
-	addCmd.Flags().StringVar(&addDomain, "domain", "", "完整域名 (如 webhook.qrj.ai)")
+	addCmd.Flags().StringVar(&addDomain, "domain", "", "完整域名 (如 webhook.example.com)")
 	addCmd.MarkFlagRequired("domain")
 	rootCmd.AddCommand(addCmd)
 }
