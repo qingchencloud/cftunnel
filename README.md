@@ -6,7 +6,7 @@
 
 **Cloudflare Tunnel 一键管理 CLI** — 让本地项目秒变公网可访问。
 
-[为什么选 cftunnel？](#why) · [安装](#install) · [快速上手](#quickstart) · [命令参考](#commands) · [AI 助手集成](#ai) · [交流](#contact)
+[为什么选 cftunnel？](#why) · [架构原理](#architecture) · [安装](#install) · [快速上手](#quickstart) · [命令参考](#commands) · [AI 助手集成](#ai) · [交流](#contact)
 
 关联项目：[cftunnel-app 桌面客户端](https://github.com/qingchencloud/cftunnel-app)（[下载](https://github.com/qingchencloud/cftunnel-app/releases)） · [ClawApp](https://github.com/qingchencloud/clawapp) · [OpenClaw 中文翻译](https://github.com/1186258278/OpenClawChineseTranslation)
 
@@ -21,11 +21,19 @@ cftunnel quick 3000
 # ✔ 隧道已启动: https://xxx-yyy-zzz.trycloudflare.com
 ```
 
+<p align="center">
+  <img src="docs/images/terminal-demo.gif" alt="cftunnel quick 演示" width="720">
+</p>
+
 **自有域名模式**（稳定持久）：4 条命令搞定 `init` → `create` → `add` → `up`
 
 cftunnel 把 Cloudflare Tunnel 的繁琐流程封装成极简 CLI，**免费、安全、无需公网 IP**。
 
 <h2 id="why">为什么选 cftunnel？</h2>
+
+<p align="center">
+  <img src="docs/images/compare-chart.gif" alt="功能对比" width="720">
+</p>
 
 | 对比项 | 原生 cloudflared | cftunnel |
 |--------|-----------------|----------|
@@ -37,6 +45,23 @@ cftunnel 把 Cloudflare Tunnel 的繁琐流程封装成极简 CLI，**免费、�
 | 清理资源 | 手动删隧道 + 删 DNS + 删配置 | `cftunnel destroy` 一键清理 |
 | AI 集成 | 无 | 内置 Skills，AI 助手直接管理 |
 | GUI 管理 | 无 | [桌面客户端](https://github.com/qingchencloud/cftunnel-app)，可视化操作 |
+
+<p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
+
+<h2 id="architecture">架构原理</h2>
+
+<p align="center">
+  <img src="docs/images/architecture.gif" alt="cftunnel 架构原理" width="720">
+</p>
+
+cftunnel 的工作流程：
+
+1. **cftunnel CLI** 作为管理器，负责配置管理和进程编排
+2. 自动下载并启动 **cloudflared** 守护进程
+3. cloudflared 与 **Cloudflare Edge** 建立加密隧道
+4. 互联网用户通过 Cloudflare 全球边缘节点访问你的本地服务
+
+整个过程无需公网 IP，流量经过 Cloudflare 全球 CDN 加速，自带 HTTPS。
 
 <p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
 
@@ -113,6 +138,10 @@ cftunnel quick 3000
 > 适合临时分享和调试，Ctrl+C 退出后域名自动失效。需要固定域名请用方式二。
 
 ### 方式二：自有域名模式
+
+<p align="center">
+  <img src="docs/images/custom-domain.gif" alt="自有域名模式演示" width="720">
+</p>
 
 #### 1. 准备 Cloudflare API Token
 
