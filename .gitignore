@@ -21,3 +21,6 @@ vendor/
 .env*
 config.yml
 credentials*.json
+
+# AI 提示词（本地）
+.claude/
