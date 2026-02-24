@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"sync"
 
 	"gopkg.in/yaml.v3"
 )
@@ -44,9 +45,37 @@ type SelfUpdateConfig struct {
 	AutoCheck bool `yaml:"auto_check"` // 启动时自动检查 cftunnel 更新
 }
 
+var (
+	dirOnce    sync.Once
+	dirPath    string
+	isPortable bool
+)
+
+// Dir 返回配置目录路径
+// 便携模式：程序同级目录存在 portable 文件时，使用程序所在目录
+// 普通模式：~/.cftunnel/
 func Dir() string {
-	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".cftunnel")
+	dirOnce.Do(func() {
+		if exe, err := os.Executable(); err == nil {
+			if real, err := filepath.EvalSymlinks(exe); err == nil {
+				exeDir := filepath.Dir(real)
+				if _, err := os.Stat(filepath.Join(exeDir, "portable")); err == nil {
+					dirPath = exeDir
+					isPortable = true
+					return
+				}
+			}
+		}
+		home, _ := os.UserHomeDir()
+		dirPath = filepath.Join(home, ".cftunnel")
+	})
+	return dirPath
+}
+
+// Portable 返回当前是否处于便携模式
+func Portable() bool {
+	Dir() // 确保 dirOnce 已执行
+	return isPortable
 }
 
 func Path() string {

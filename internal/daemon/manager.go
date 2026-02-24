@@ -4,13 +4,17 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/qingchencloud/cftunnel/internal/config"
 )
 
-var pidFile = config.Dir() + "/cloudflared.pid"
+// pidFilePath 返回 PID 文件路径（函数调用替代包级变量，确保便携模式正确生效）
+func pidFilePath() string {
+	return filepath.Join(config.Dir(), "cloudflared.pid")
+}
 
 // Start 启动 cloudflared（token 模式）
 func Start(token string) error {
@@ -30,7 +34,7 @@ func Start(token string) error {
 	}
 
 	os.MkdirAll(config.Dir(), 0700)
-	os.WriteFile(pidFile, []byte(strconv.Itoa(cmd.Process.Pid)), 0600)
+	os.WriteFile(pidFilePath(), []byte(strconv.Itoa(cmd.Process.Pid)), 0600)
 	fmt.Printf("cloudflared 已启动 (PID: %d)\n", cmd.Process.Pid)
 	return nil
 }
@@ -44,7 +48,7 @@ func Stop() error {
 	if err := processKill(pid); err != nil {
 		return fmt.Errorf("停止 cloudflared 失败: %w", err)
 	}
-	os.Remove(pidFile)
+	os.Remove(pidFilePath())
 	fmt.Println("cloudflared 已停止")
 	return nil
 }
@@ -65,7 +69,7 @@ func PID() int {
 }
 
 func readPID() (int, error) {
-	data, err := os.ReadFile(pidFile)
+	data, err := os.ReadFile(pidFilePath())
 	if err != nil {
 		return 0, err
 	}

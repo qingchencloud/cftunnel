@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/qingchencloud/cftunnel/internal/config"
@@ -41,10 +42,17 @@ var resetCmd = &cobra.Command{
 			}
 		}
 
-		// 删除整个配置目录
+		// 删除配置目录
 		dir := config.Dir()
-		if err := os.RemoveAll(dir); err != nil {
-			return fmt.Errorf("清除配置目录失败: %w", err)
+		if config.Portable() {
+			// 便携模式：只清理数据文件，不删程序自身和 portable 标记
+			for _, name := range []string{"config.yml", "bin", "cloudflared.pid", "cftunnel.log"} {
+				os.RemoveAll(filepath.Join(dir, name))
+			}
+		} else {
+			if err := os.RemoveAll(dir); err != nil {
+				return fmt.Errorf("清除配置目录失败: %w", err)
+			}
 		}
 
 		fmt.Printf("已清除 %s，回到全新状态\n", dir)

@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/qingchencloud/cftunnel/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +21,11 @@ func init() {
 
 // logFilePath 根据操作系统返回日志文件路径
 func logFilePath() string {
+	// 便携模式：日志放在程序同级目录
+	if config.Portable() {
+		return filepath.Join(config.Dir(), "cftunnel.log")
+	}
+	// 普通模式：按 OS 惯例
 	home, _ := os.UserHomeDir()
 	switch runtime.GOOS {
 	case "darwin":

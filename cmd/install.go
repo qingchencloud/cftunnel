@@ -18,6 +18,9 @@ var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "注册为系统服务（开机自启）",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if config.Portable() {
+			return fmt.Errorf("便携模式下不支持注册系统服务（路径不固定），请使用 cftunnel up 手动启动")
+		}
 		cfg, err := config.Load()
 		if err != nil {
 			return err
