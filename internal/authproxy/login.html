@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cftunnel - 访问验证</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:#06060b;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:#e0e0e0;
+}
+.card{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:40px;width:380px;
+  backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,.4);
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);
+}
+.logo{text-align:center;margin-bottom:8px;font-size:22px;font-weight:800}
+.logo span{background:linear-gradient(135deg,#60a5fa,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:#7a7a95;font-size:14px;margin-bottom:32px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;color:#7a7a95;margin-bottom:6px;font-weight:500}
+.field input{
+  width:100%;padding:11px 14px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;color:#fff;font-size:15px;
+  outline:none;transition:border-color .2s;
+}
+.field input:focus{border-color:#3b82f6}
+.btn{
+  width:100%;padding:12px;margin-top:8px;
+  background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;
+  border-radius:10px;font-size:15px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.btn:hover{box-shadow:0 4px 20px rgba(59,130,246,.3);transform:translateY(-1px)}
+.error{
+  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);
+  color:#f87171;padding:10px 14px;border-radius:8px;font-size:13px;
+  margin-bottom:16px;display:none;text-align:center;
+}
+.footer{text-align:center;margin-top:24px;font-size:12px;color:#50506a}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">cf<span>tunnel</span></div>
+  <div class="subtitle">此服务需要身份验证</div>
+  <div class="error" id="err">用户名或密码错误</div>
+  <form method="POST" action="/___auth/login">
+    <div class="field">
+      <label for="u">用户名</label>
+      <input type="text" id="u" name="username" autocomplete="username" required autofocus>
+    </div>
+    <div class="field">
+      <label for="p">密码</label>
+      <input type="password" id="p" name="password" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="btn">登 录</button>
+  </form>
+  <div class="footer">Powered by <a href="https://cftunnel.qt.cool" target="_blank" style="color:#7a7a95;text-decoration:underline;text-underline-offset:2px">cftunnel</a></div>
+</div>
+<script>
+if(new URLSearchParams(location.search).has('error'))document.getElementById('err').style.display='block';
+</script>
+</body>
+</html>

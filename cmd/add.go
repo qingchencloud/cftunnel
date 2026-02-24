@@ -2,19 +2,23 @@ package cmd
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"strings"
 
+	"github.com/qingchencloud/cftunnel/internal/authproxy"
 	"github.com/qingchencloud/cftunnel/internal/cfapi"
 	"github.com/qingchencloud/cftunnel/internal/config"
 	"github.com/spf13/cobra"
 )
 
 var addDomain string
+var addAuth string
 
 func init() {
 	addCmd.Flags().StringVar(&addDomain, "domain", "", "完整域名 (如 webhook.example.com)")
 	addCmd.MarkFlagRequired("domain")
+	addCmd.Flags().StringVar(&addAuth, "auth", "", "启用密码保护 (格式: 用户名:密码)")
 	rootCmd.AddCommand(addCmd)
 }
 
@@ -77,14 +81,31 @@ var addCmd = &cobra.Command{
 			return err
 		}
 
-		// 保存路由
-		cfg.Routes = append(cfg.Routes, config.RouteConfig{
+		// 构建路由配置
+		route := config.RouteConfig{
 			Name:        name,
 			Hostname:    addDomain,
 			Service:     service,
 			ZoneID:      zone.ID,
 			DNSRecordID: recordID,
-		})
+		}
+
+		// 如果指定了 --auth，填充鉴权配置
+		if addAuth != "" {
+			user, pass, err := parseAuth(addAuth)
+			if err != nil {
+				return err
+			}
+			route.Auth = &config.AuthProxy{
+				Username:   user,
+				Password:   pass,
+				SigningKey:  hex.EncodeToString(authproxy.RandomKey()),
+			}
+			fmt.Printf("已启用密码保护: %s\n", addDomain)
+		}
+
+		// 保存路由
+		cfg.Routes = append(cfg.Routes, route)
 		if err := cfg.Save(); err != nil {
 			return err
 		}

@@ -318,6 +318,11 @@ footer{border-top:1px solid var(--border);padding:48px 0;position:relative;z-ind
       <p>基于 Cloudflare 全球网络加密传输，无需公网 IP，完全免费使用</p>
     </div>
     <div class="feature-card reveal">
+      <div class="feature-icon purple"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h3>访问保护</h3>
+      <p>--auth user:pass 一键启用密码保护，内置鉴权代理中间件，无需外部依赖，支持 WebSocket 透传</p>
+    </div>
+    <div class="feature-card reveal">
       <div class="feature-icon blue"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
       <h3>系统服务</h3>
       <p>cftunnel install 一键注册开机自启 — macOS launchd / Linux systemd / Windows Service</p>
@@ -410,6 +415,7 @@ footer{border-top:1px solid var(--border);padding:48px 0;position:relative;z-ind
         <tr><td>清理资源</td><td>手动删隧道 + 删 DNS + 删配置</td><td>cftunnel destroy</td></tr>
         <tr><td>自更新</td><td>无</td><td>cftunnel update</td></tr>
         <tr><td>便携模式</td><td>无</td><td>portable 文件启用</td></tr>
+        <tr><td>密码保护</td><td>需配合 Cloudflare Access</td><td>--auth user:pass 内置鉴权</td></tr>
         <tr><td>下载加速</td><td>仅 GitHub 原始地址</td><td>多镜像源自动轮询</td></tr>
         <tr><td>Windows 检测</td><td>无</td><td>自动检测 Win10+ 版本</td></tr>
       </tbody>
@@ -428,9 +434,11 @@ footer{border-top:1px solid var(--border);padding:48px 0;position:relative;z-ind
   </div>
   <div class="cmd-grid">
     <div class="cmd-item reveal"><div class="cmd-code">quick &lt;端口&gt;</div><div class="cmd-desc">免域名模式，一键穿透，Ctrl+C 退出自动清理</div></div>
+    <div class="cmd-item reveal"><div class="cmd-code">quick &lt;端口&gt; --auth user:pass</div><div class="cmd-desc">免域名模式 + 密码保护，访问需登录验证</div></div>
     <div class="cmd-item reveal"><div class="cmd-code">init</div><div class="cmd-desc">初始化配置，输入 API Token 和 Account ID</div></div>
     <div class="cmd-item reveal"><div class="cmd-code">create &lt;名称&gt;</div><div class="cmd-desc">创建 Cloudflare Tunnel</div></div>
     <div class="cmd-item reveal"><div class="cmd-code">add &lt;名&gt; &lt;端口&gt;</div><div class="cmd-desc">添加路由，自动创建 DNS CNAME 记录</div></div>
+    <div class="cmd-item reveal"><div class="cmd-code">add &lt;名&gt; &lt;端口&gt; --auth user:pass</div><div class="cmd-desc">添加路由 + 密码保护</div></div>
     <div class="cmd-item reveal"><div class="cmd-code">remove &lt;名称&gt;</div><div class="cmd-desc">删除路由，同步清理 DNS 记录</div></div>
     <div class="cmd-item reveal"><div class="cmd-code">up / down</div><div class="cmd-desc">启动 / 停止 cloudflared 守护进程</div></div>
     <div class="cmd-item reveal"><div class="cmd-code">install</div><div class="cmd-desc">注册系统服务，开机自启</div></div>

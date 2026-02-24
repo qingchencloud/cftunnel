@@ -29,11 +29,28 @@ type TunnelConfig struct {
 }
 
 type RouteConfig struct {
-	Name        string `yaml:"name"`
-	Hostname    string `yaml:"hostname"`
-	Service     string `yaml:"service"`
-	ZoneID      string `yaml:"zone_id"`
-	DNSRecordID string `yaml:"dns_record_id"`
+	Name        string     `yaml:"name"`
+	Hostname    string     `yaml:"hostname"`
+	Service     string     `yaml:"service"`
+	ZoneID      string     `yaml:"zone_id"`
+	DNSRecordID string     `yaml:"dns_record_id"`
+	Auth        *AuthProxy `yaml:"auth,omitempty"`
+}
+
+// AuthProxy 鉴权代理配置
+type AuthProxy struct {
+	Username  string `yaml:"username"`
+	Password  string `yaml:"password"`
+	SigningKey string `yaml:"signing_key,omitempty"`
+	CookieTTL int    `yaml:"cookie_ttl,omitempty"` // 秒，默认 86400
+}
+
+// CookieTTLOrDefault 返回 Cookie 有效期（秒），默认 86400
+func (a *AuthProxy) CookieTTLOrDefault() int {
+	if a.CookieTTL > 0 {
+		return a.CookieTTL
+	}
+	return 86400
 }
 
 type CloudflaredConfig struct {
