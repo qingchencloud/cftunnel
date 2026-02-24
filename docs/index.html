@@ -181,7 +181,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-bottom:16px}
       <source src="videos/promo.mp4" type="video/mp4">
     </video>
   </div>
-  <p class="video-label">cftunnel v0.4 · 终端演示 + 架构解析 + 功能对比</p>
+  <p class="video-label">cftunnel v0.5 · 终端演示 + 架构解析 + 功能对比</p>
 </div>
 </section>
 
@@ -218,9 +218,14 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-bottom:16px}
       <p>cftunnel install 一条命令注册开机自启，macOS launchd / Linux systemd / Windows Service</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">🤖</div>
-      <h3>AI 集成</h3>
-      <p>内置 Claude Code / OpenClaw Skills，AI 编码助手可直接帮你管理隧道</p>
+      <div class="feature-icon">📦</div>
+      <h3>便携模式</h3>
+      <p>程序同级目录放一个 portable 空文件，配置/日志/二进制全部就地存储，U 盘携带、绿色免安装</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚀</div>
+      <h3>下载加速</h3>
+      <p>内置多镜像源轮询，自动选择最快的下载通道，国内用户也能秒装 cloudflared</p>
     </div>
   </div>
 </div>
@@ -243,6 +248,8 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-bottom:16px}
         <tr><td>开机自启</td><td>手动写 systemd / launchd</td><td>cftunnel install</td></tr>
         <tr><td>清理资源</td><td>手动删隧道 + 删 DNS + 删配置</td><td>cftunnel destroy</td></tr>
         <tr><td>自更新</td><td>无</td><td>cftunnel update</td></tr>
+        <tr><td>便携模式</td><td>无</td><td>portable 文件启用，绿色免安装</td></tr>
+        <tr><td>下载加速</td><td>仅 GitHub 原始地址</td><td>多镜像源自动轮询</td></tr>
       </tbody>
     </table>
   </div>
@@ -267,7 +274,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-bottom:16px}
     </div>
     <div class="install-panel">
       <pre><span style="color:var(--green)">PS&gt;</span> irm https://raw.githubusercontent.com/qingchencloud/cftunnel/main/install.ps1 | iex</pre>
-      <p style="margin-top:12px;font-size:13px;color:var(--text2)">支持 Windows amd64 / arm64，自动添加到 PATH</p>
+      <p style="margin-top:12px;font-size:13px;color:var(--text2)">支持 Windows 10+ (amd64 / arm64)，自动添加到 PATH</p>
     </div>
     <div class="install-panel">
       <pre><span style="color:var(--green)">$</span> git clone https://github.com/qingchencloud/cftunnel.git

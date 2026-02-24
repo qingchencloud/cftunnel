@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/qingchencloud/cftunnel/internal/config"
 )
@@ -37,43 +38,77 @@ func EnsureCloudflared() (string, error) {
 	return path, download(path)
 }
 
+// GitHub 镜像源列表（按优先级排序，最后一个是原始地址兜底）
+var mirrors = []string{
+	"https://ghfast.top/",
+	"https://gh-proxy.com/",
+	"https://ghproxy.cn/",
+	"", // 原始 GitHub 地址
+}
+
 func download(dest string) error {
-	url, err := downloadURL()
+	filename, err := downloadFilename()
 	if err != nil {
 		return err
 	}
-	fmt.Printf("正在下载 cloudflared...\n")
+	const origin = "https://github.com/cloudflare/cloudflared/releases/latest/download/"
+	fmt.Println("正在下载 cloudflared...")
 
 	if err := os.MkdirAll(filepath.Dir(dest), 0755); err != nil {
 		return err
 	}
-	resp, err := http.Get(url)
-	if err != nil {
-		return fmt.Errorf("下载失败: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("下载失败: HTTP %d", resp.StatusCode)
-	}
 
-	// macOS 的 cloudflared 是 tgz 格式，需要解压
-	if strings.HasSuffix(url, ".tgz") {
-		return extractTgz(resp.Body, dest)
-	}
+	client := &http.Client{Timeout: 120 * time.Second}
+	var lastErr error
+	for _, mirror := range mirrors {
+		url := mirror + origin + filename
+		src := "GitHub"
+		if mirror != "" {
+			src = strings.TrimRight(mirror, "/")
+		}
+		fmt.Printf("尝试下载: %s ...\n", src)
 
-	// Linux/Windows 是裸二进制，直接写入
+		resp, err := client.Get(url)
+		if err != nil {
+			fmt.Printf("  连接失败: %v\n", err)
+			lastErr = err
+			continue
+		}
+		if resp.StatusCode != 200 {
+			resp.Body.Close()
+			fmt.Printf("  HTTP %d\n", resp.StatusCode)
+			lastErr = fmt.Errorf("HTTP %d from %s", resp.StatusCode, src)
+			continue
+		}
+
+		err = saveCloudflared(resp.Body, dest, filename)
+		resp.Body.Close()
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		fmt.Printf("cloudflared 已下载到 %s\n", dest)
+		return nil
+	}
+	return fmt.Errorf("所有下载源均失败，最后错误: %w", lastErr)
+}
+
+// saveCloudflared 将下载内容保存到目标路径
+func saveCloudflared(r io.Reader, dest, filename string) error {
+	if strings.HasSuffix(filename, ".tgz") {
+		return extractTgz(r, dest)
+	}
 	f, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	if _, err := io.Copy(f, resp.Body); err != nil {
+	if _, err := io.Copy(f, r); err != nil {
 		return err
 	}
 	if runtime.GOOS != "windows" {
 		os.Chmod(dest, 0755)
 	}
-	fmt.Printf("cloudflared 已下载到 %s\n", dest)
 	return nil
 }
 
@@ -108,21 +143,20 @@ func extractTgz(r io.Reader, dest string) error {
 	}
 }
 
-func downloadURL() (string, error) {
-	const base = "https://github.com/cloudflare/cloudflared/releases/latest/download/"
+func downloadFilename() (string, error) {
 	switch runtime.GOOS + "/" + runtime.GOARCH {
 	case "darwin/arm64":
-		return base + "cloudflared-darwin-arm64.tgz", nil
+		return "cloudflared-darwin-arm64.tgz", nil
 	case "darwin/amd64":
-		return base + "cloudflared-darwin-amd64.tgz", nil
+		return "cloudflared-darwin-amd64.tgz", nil
 	case "linux/amd64":
-		return base + "cloudflared-linux-amd64", nil
+		return "cloudflared-linux-amd64", nil
 	case "linux/arm64":
-		return base + "cloudflared-linux-arm64", nil
+		return "cloudflared-linux-arm64", nil
 	case "windows/amd64":
-		return base + "cloudflared-windows-amd64.exe", nil
+		return "cloudflared-windows-amd64.exe", nil
 	case "windows/arm64":
-		return base + "cloudflared-windows-amd64.exe", nil
+		return "cloudflared-windows-amd64.exe", nil
 	default:
 		return "", fmt.Errorf("不支持的平台: %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
