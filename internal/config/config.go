@@ -121,7 +121,9 @@ func Load() (*Config, error) {
 	data, err := os.ReadFile(Path())
 	if err != nil {
 		if os.IsNotExist(err) {
-			return &Config{Version: 1}, nil
+			cfg := &Config{Version: 1}
+			cfg.applyEnvOverrides()
+			return cfg, nil
 		}
 		return nil, err
 	}
@@ -129,7 +131,24 @@ func Load() (*Config, error) {
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, err
 	}
+	cfg.applyEnvOverrides()
 	return &cfg, nil
+}
+
+// applyEnvOverrides 用环境变量覆盖配置（CI/CD 和 Docker 场景）
+func (c *Config) applyEnvOverrides() {
+	if v := os.Getenv("CFTUNNEL_API_TOKEN"); v != "" {
+		c.Auth.APIToken = v
+	}
+	if v := os.Getenv("CFTUNNEL_ACCOUNT_ID"); v != "" {
+		c.Auth.AccountID = v
+	}
+	if v := os.Getenv("CFTUNNEL_RELAY_SERVER"); v != "" {
+		c.Relay.Server = v
+	}
+	if v := os.Getenv("CFTUNNEL_RELAY_TOKEN"); v != "" {
+		c.Relay.Token = v
+	}
 }
 
 func (c *Config) Save() error {
