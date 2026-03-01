@@ -7,11 +7,24 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/qingchencloud/cftunnel/internal/authproxy"
+	"github.com/qingchencloud/cftunnel/internal/config"
 )
+
+// quickConfigPath 返回 quick 模式专用的空配置文件路径
+// 防止 cloudflared 读取用户已有的 ~/.cloudflared/config.yml 导致 UUID 解析失败
+func quickConfigPath() string {
+	p := filepath.Join(config.Dir(), "quick-config.yml")
+	if _, err := os.Stat(p); os.IsNotExist(err) {
+		os.MkdirAll(config.Dir(), 0700)
+		os.WriteFile(p, []byte("# cftunnel quick mode - empty config\n"), 0600)
+	}
+	return p
+}
 
 // StartQuick 启动免域名模式（前台运行，Ctrl+C 退出）
 func StartQuick(port string) error {
@@ -23,7 +36,10 @@ func StartQuick(port string) error {
 		return fmt.Errorf("cloudflared 已在运行，请先执行 cftunnel down")
 	}
 
-	cmd := exec.Command(binPath, "tunnel", "--url", "http://localhost:"+port)
+	// 显式指定空配置文件，防止 cloudflared 读取用户已有的 ~/.cloudflared/config.yml
+	// 避免残留的 tunnel: 字段触发 UUID 解析失败 (issue #13)
+	cfgPath := quickConfigPath()
+	cmd := exec.Command(binPath, "tunnel", "--config", cfgPath, "--url", "http://localhost:"+port)
 
 	// 捕获 stderr 提取随机域名
 	stderr, err := cmd.StderrPipe()
@@ -111,8 +127,9 @@ func StartQuickWithAuth(port, username, password string) error {
 	proxyPort := fmt.Sprintf("%d", proxy.ListenPort())
 	fmt.Printf("鉴权代理已启动 127.0.0.1:%s → 127.0.0.1:%s\n", proxyPort, port)
 
-	// cloudflared 指向代理端口
-	cmd := exec.Command(binPath, "tunnel", "--url", "http://localhost:"+proxyPort)
+	// cloudflared 指向代理端口（同样隔离配置文件）
+	cfgPath := quickConfigPath()
+	cmd := exec.Command(binPath, "tunnel", "--config", cfgPath, "--url", "http://localhost:"+proxyPort)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
