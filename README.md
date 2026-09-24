@@ -1,5 +1,7 @@
 # cftunnel
 
+[English](README.en.md)
+
 [![GitHub release](https://img.shields.io/github/v/release/qingchencloud/cftunnel)](https://github.com/qingchencloud/cftunnel/releases)
 [![Go Report Card](https://img.shields.io/badge/go%20report-A+-brightgreen?style=flat&logo=go)](https://goreportcard.com/report/github.com/qingchencloud/cftunnel)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -388,6 +390,7 @@ git tag v0.x.0 && git push --tags  # 推送 tag 自动触发 GitHub Actions 发�
 <h2 id="contact">交流</h2>
 
 - 官网: [cftunnel.qt.cool](https://cftunnel.qt.cool)
+- Telegram 群: [加入 cftunnel 社区](https://t.me/+-53et5QXFh0xYzhk)
 - QQ 群: [OpenClaw 交流群](https://qm.qq.com/q/qUfdR0jJVS)
 - Issues: [GitHub Issues](https://github.com/qingchencloud/cftunnel/issues)
 
