@@ -311,7 +311,12 @@ relay:
       proto: udp
       local_port: 9987
       remote_port: 9987
+
+self_update:
+  auto_check: true
 ```
+
+`self_update.auto_check` is enabled by default. Set it to `false` to disable startup checks; the desktop update center checks both the CLI and desktop client.
 
 <p align="right"><a href="#cftunnel">⬆ Back to top</a></p>
 
