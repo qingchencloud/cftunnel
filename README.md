@@ -322,7 +322,13 @@ relay:
       proto: udp
       local_port: 9987
       remote_port: 9987
+
+# 启动隧道时自动检查 cftunnel 更新
+self_update:
+  auto_check: true
 ```
+
+`self_update.auto_check` 默认开启；需要关闭时改为 `false`。桌面客户端的更新中心会同时检查 CLI 与桌面客户端。
 
 <p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
 
