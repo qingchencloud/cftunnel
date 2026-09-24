@@ -121,7 +121,7 @@ func Load() (*Config, error) {
 	data, err := os.ReadFile(Path())
 	if err != nil {
 		if os.IsNotExist(err) {
-			cfg := &Config{Version: 1}
+			cfg := defaultConfig()
 			cfg.applyEnvOverrides()
 			return cfg, nil
 		}
@@ -131,8 +131,23 @@ func Load() (*Config, error) {
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, err
 	}
+	// 老配置没有新字段时默认启用启动检查，用户显式写 false 仍保持关闭。
+	var raw map[string]interface{}
+	if yaml.Unmarshal(data, &raw) == nil {
+		section, hasSection := raw["self_update"].(map[string]interface{})
+		if !hasSection || section["auto_check"] == nil {
+			cfg.SelfUpdate.AutoCheck = true
+		}
+	}
 	cfg.applyEnvOverrides()
 	return &cfg, nil
+}
+
+func defaultConfig() *Config {
+	return &Config{
+		Version:    1,
+		SelfUpdate: SelfUpdateConfig{AutoCheck: true},
+	}
 }
 
 // applyEnvOverrides 用环境变量覆盖配置（CI/CD 和 Docker 场景）
