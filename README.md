@@ -77,6 +77,9 @@ cftunnel quick 25565 --relay
 - **跨平台** — macOS (Intel/Apple Silicon) + Linux (amd64/arm64) + Windows (amd64/arm64)
 - **进程托管** — 自动下载引擎二进制，支持 macOS launchd / Linux systemd / Windows Service
 - **自动更新** — 内置版本检查和一键自更新
+- **一键分享** — `--share` 同时生成终端二维码、复制地址并输出 Telegram 分享链接
+- **场景模板** — `preset frontend/webapp/webhook/homeassistant` 与桌面客户端保持一致
+- **最近端口** — 自动记录本地使用过的端口，可用 `history` 查看或清空
 - **便携模式** — 程序同级目录放 `portable` 空文件，配置/日志/二进制就地存储
 - **桌面客户端** — [cftunnel-app](https://github.com/qingchencloud/cftunnel-app) 提供可视化 GUI
 - **AI 友好** — 内置 Claude Code / OpenClaw Skills，AI 助手可直接管理隧道
@@ -152,6 +155,23 @@ cftunnel quick 3000 --auth admin:secret123
 ```
 
 > 适合临时分享和调试，Ctrl+C 退出后域名自动失效。
+
+需要把地址分享给手机或协作者时，直接加 `--share`：
+
+```bash
+cftunnel quick 3000 --share       # 二维码 + 剪贴板 + Telegram 分享链接
+cftunnel share https://xxx.trycloudflare.com --qr
+```
+
+常用开发场景可以一键启动，端口会自动记入本地历史：
+
+```bash
+cftunnel preset list
+cftunnel preset frontend --share  # 5173，Vite / Webpack
+cftunnel preset webhook           # 8080，回调与接口调试
+cftunnel history                  # 查看最近使用的端口
+cftunnel history clear            # 清空本地记录
+```
 
 ### 方式二：自有域名模式（Cloudflare）
 
@@ -286,6 +306,18 @@ docker compose up -d
 |------|------|
 | `cftunnel version [--check]` | 显示版本 / 检查更新 |
 | `cftunnel update` | 自动更新到最新版 |
+
+### 分享与场景
+
+| 命令 | 说明 |
+|------|------|
+| `cftunnel quick <端口> --share` | 启动 Cloud quick 并显示二维码、复制地址、输出 Telegram 链接 |
+| `cftunnel quick <端口> --qr` | 仅显示终端二维码 |
+| `cftunnel quick <端口> --telegram` | 打开 Telegram 分享页面 |
+| `cftunnel share <公网地址>` | 为已有地址生成分享信息 |
+| `cftunnel preset list` | 查看前端、Web、Webhook、Home Assistant 模板 |
+| `cftunnel preset <名称>` | 按模板端口启动 quick 隧道 |
+| `cftunnel history [clear]` | 查看或清空最近端口记录 |
 
 <p align="right"><a href="#cftunnel">⬆ 回到顶部</a></p>
 

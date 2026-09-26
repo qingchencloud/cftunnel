@@ -28,6 +28,12 @@ func quickConfigPath() string {
 
 // StartQuick 启动免域名模式（前台运行，Ctrl+C 退出）
 func StartQuick(port string) error {
+	return StartQuickWithCallback(port, nil)
+}
+
+// StartQuickWithCallback 启动免域名模式，并在首次拿到公网地址时调用回调。
+// 回调在 cloudflared 的输出协程中执行，适合展示二维码、复制地址等非阻塞操作。
+func StartQuickWithCallback(port string, onURL func(string)) error {
 	binPath, err := EnsureCloudflared()
 	if err != nil {
 		return err
@@ -53,7 +59,7 @@ func StartQuick(port string) error {
 	}
 
 	// 后台读取 stderr，提取域名并转发输出
-	go scanForURL(stderr)
+	go scanForURL(stderr, onURL)
 
 	// 捕获 Ctrl+C 优雅退出
 	sig := make(chan os.Signal, 1)
@@ -74,15 +80,20 @@ func StartQuick(port string) error {
 	return nil
 }
 
-func scanForURL(r io.Reader) {
+func scanForURL(r io.Reader, onURL func(string)) {
 	scanner := bufio.NewScanner(r)
+	lastURL := ""
 	for scanner.Scan() {
 		line := scanner.Text()
 		// cloudflared 输出格式: ... https://xxx.trycloudflare.com ...
 		if strings.Contains(line, "trycloudflare.com") {
 			url := extractURL(line)
-			if url != "" {
+			if url != "" && url != lastURL {
 				fmt.Printf("\n✔ 隧道已启动: %s\n\n", url)
+				if onURL != nil {
+					onURL(url)
+				}
+				lastURL = url
 			}
 		}
 		fmt.Fprintln(os.Stderr, line)
@@ -100,6 +111,11 @@ func extractURL(line string) string {
 
 // StartQuickWithAuth 启动带鉴权代理的免域名模式
 func StartQuickWithAuth(port, username, password string) error {
+	return StartQuickWithAuthCallback(port, username, password, nil)
+}
+
+// StartQuickWithAuthCallback 是带鉴权代理的 quick 模式，并支持公网地址回调。
+func StartQuickWithAuthCallback(port, username, password string, onURL func(string)) error {
 	binPath, err := EnsureCloudflared()
 	if err != nil {
 		return err
@@ -113,7 +129,7 @@ func StartQuickWithAuth(port, username, password string) error {
 		Username:   username,
 		Password:   password,
 		TargetPort: port,
-		SigningKey:  authproxy.RandomKey(),
+		SigningKey: authproxy.RandomKey(),
 		CookieTTL:  24 * time.Hour,
 	})
 	if err != nil {
@@ -141,7 +157,7 @@ func StartQuickWithAuth(port, username, password string) error {
 		return fmt.Errorf("启动 cloudflared 失败: %w", err)
 	}
 
-	go scanForURL(stderr)
+	go scanForURL(stderr, onURL)
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)

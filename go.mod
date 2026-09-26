@@ -3,8 +3,10 @@ module github.com/qingchencloud/cftunnel
 go 1.25.7
 
 require (
+	github.com/atotto/clipboard v0.1.4
 	github.com/charmbracelet/huh v0.8.0
 	github.com/cloudflare/cloudflare-go/v6 v6.7.0
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.10.2
 	golang.org/x/crypto v0.48.0
 	golang.org/x/sys v0.41.0
@@ -12,7 +14,6 @@ require (
 )
 
 require (
-	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/catppuccin/go v0.3.0 // indirect
 	github.com/charmbracelet/bubbles v0.21.1-0.20250623103423-23b8fd6302d7 // indirect

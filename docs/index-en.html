@@ -440,6 +440,13 @@ footer .footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:
         <p>Run cftunnel quick 3000 to tunnel localhost:3000 instantly</p>
       </div>
       <div class="feature-card reveal">
+        <div class="feature-icon blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 11h10M7 15h6"/></svg>
+        </div>
+        <h3>One-click terminal sharing</h3>
+        <p>Use --share for a QR code, clipboard copy, and Telegram share link</p>
+      </div>
+      <div class="feature-card reveal">
         <div class="feature-icon orange">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         </div>
@@ -472,7 +479,7 @@ footer .footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         </div>
         <h3>Self-update</h3>
-        <p>Upgrade to the latest version with cftunnel selfupdate</p>
+        <p>Upgrade to the latest version with cftunnel update</p>
       </div>
       <div class="feature-card reveal">
         <div class="feature-icon red">
@@ -589,6 +596,9 @@ footer .footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:
         <div class="cmd-grid">
           <div class="cmd-item"><div class="cmd-code">cftunnel init</div><div class="cmd-desc">Initialize configuration (API Token + Account ID)</div></div>
           <div class="cmd-item"><div class="cmd-code">cftunnel quick 3000</div><div class="cmd-desc">Tunnel local port 3000 (no domain required)</div></div>
+          <div class="cmd-item"><div class="cmd-code">cftunnel quick 3000 --share</div><div class="cmd-desc">Share with a QR code, clipboard, and Telegram</div></div>
+          <div class="cmd-item"><div class="cmd-code">cftunnel preset frontend</div><div class="cmd-desc">Start the 5173 frontend preset</div></div>
+          <div class="cmd-item"><div class="cmd-code">cftunnel history</div><div class="cmd-desc">List recently used local ports</div></div>
           <div class="cmd-item"><div class="cmd-code">cftunnel create mytunnel</div><div class="cmd-desc">Create a named tunnel</div></div>
           <div class="cmd-item"><div class="cmd-code">cftunnel add myapp 8080 --domain app.example.com</div><div class="cmd-desc">Add a domain route</div></div>
           <div class="cmd-item"><div class="cmd-code">cftunnel remove myapp</div><div class="cmd-desc">Remove a domain route</div></div>

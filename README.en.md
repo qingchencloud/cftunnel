@@ -77,6 +77,9 @@ Both modes are independent and can run at the same time.
 - **Cross-platform** — macOS (Intel/Apple Silicon), Linux (amd64/arm64), and Windows (amd64/arm64).
 - **Process management** — downloads engine binaries and supports macOS launchd, Linux systemd, and Windows Service.
 - **Self-update** — built-in version checks and one-command upgrades.
+- **One-click sharing** — `--share` prints a terminal QR code, copies the URL, and provides a Telegram share link.
+- **Scenario presets** — `preset frontend/webapp/webhook/homeassistant` matches the desktop client's common workflows.
+- **Recent ports** — quick starts are remembered locally and can be listed or cleared with `history`.
 - **Portable mode** — place an empty `portable` file beside the binary to keep config, logs, and binaries local.
 - **Desktop client** — [cftunnel-app](https://github.com/qingchencloud/cftunnel-app) provides a visual GUI.
 - **AI-friendly** — bundled Claude Code / OpenClaw Skills let AI assistants manage tunnels directly.
@@ -152,6 +155,24 @@ cftunnel quick 3000 --auth admin:secret123
 ```
 
 The random URL is temporary and expires when you press Ctrl+C.
+
+Share the generated address with a phone or collaborator in one step:
+
+```bash
+cftunnel quick 3000 --share       # QR code + clipboard + Telegram link
+cftunnel share https://xxx.trycloudflare.com --qr
+```
+
+Common development scenarios are available as presets, and every quick start is
+remembered in a local history file:
+
+```bash
+cftunnel preset list
+cftunnel preset frontend --share  # 5173, Vite / Webpack
+cftunnel preset webhook           # 8080, callback/API debugging
+cftunnel history                  # list recent ports
+cftunnel history clear            # clear local history
+```
 
 ### Option 2: Custom domain (Cloudflare)
 
@@ -277,6 +298,18 @@ Open port 7000 and the ports used by your tunnels in the server firewall.
 |------|------|
 | `cftunnel version [--check]` | Show the version or check for updates |
 | `cftunnel update` | Update to the latest version |
+
+### Sharing and scenarios
+
+| Command | Description |
+|------|------|
+| `cftunnel quick <port> --share` | Start Cloud quick with QR, clipboard, and Telegram link |
+| `cftunnel quick <port> --qr` | Print a terminal QR code |
+| `cftunnel quick <port> --telegram` | Open the Telegram share page |
+| `cftunnel share <public-url>` | Generate sharing information for an existing URL |
+| `cftunnel preset list` | List frontend, Web, Webhook, and Home Assistant templates |
+| `cftunnel preset <name>` | Start a quick tunnel using a preset port |
+| `cftunnel history [clear]` | List or clear recent local ports |
 
 <p align="right"><a href="#cftunnel">⬆ Back to top</a></p>
 
